@@ -32,6 +32,14 @@ function getAllWorks(){
 getAllWorks(url)
   .then(data => {
     console.log('Données récupérées avec succès :', data);
+    data.forEach(element => {
+        const gallery = document.querySelector(".gallery")
+        const name = document.createElement("div")
+        name.innerHTML = element.title
+        gallery.appendChild(name)
+    
+        
+    })
   })
   .catch(error => {
     console.error('Une erreur s\'est produite lors de la récupération des données :', error);
@@ -48,20 +56,11 @@ fetch(url)
     // Convertit la réponse en JSON
     return response.json();
   })
-  .then(data => {
-    data.forEach(element => {
-        const gallery = document.querySelector(".gallery")
-        const name = document.createElement("div")
-        name.innerHTML = element.title
-        gallery.appendChild(name)
+  
+  
     
-        
-    })
-    // Manipule les données récupérées
-    console.log('Données récupérées:', data);
-    
-   ;
+   
 
-  })
+  
 
  

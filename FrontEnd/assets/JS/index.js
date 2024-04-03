@@ -63,8 +63,5 @@ fetch(url)
    ;
 
   })
-  .catch(error => {
-    // Attrape et gère les erreurs
-    console.error('Une erreur s\'est produite:', error);
-  });
+
  

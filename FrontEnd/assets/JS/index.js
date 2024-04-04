@@ -1,62 +1,44 @@
-// url de l'api 
 const url = 'http://localhost:5678/api/works';
-// récupére tous les travaux
-function getAllWorks(){
-    return new Promise((resolve, reject) => {
-        fetch(url)
-    .then(response => {
-    // Vérifie si la requête a été effectuée avec succès
-    if (!response.ok) {
-      throw new Error('La requête a échoué');
+
+// Sélection de la div gallery 
+const gallery = document.querySelector(".gallery");
+
+// Récupération des projets dans l'api 
+async function getWorks() {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching works:', error);
+        return [];
     }
-    // Convertit la réponse en JSON
-    return response.json();
-  })
-  .then(data => {
-    resolve(data);
-    // Manipule les données récupérées
-    console.log('Données récupérées:', data);
-
-  })
-  .catch(error => {
-    reject(error)
-    // Attrape et gère les erreurs
-    console.error('Une erreur s\'est produite:', error);
-  });
-
-
-
-    })
 }
-// appel de la fonction 
-getAllWorks(url)
-  .then(data => {
-    console.log('Données récupérées avec succès :', data);
-    data.forEach(element => {
-        const gallery = document.querySelector(".gallery")
-        const name = document.createElement("div")
-        name.innerHTML = element.title
-        gallery.appendChild(name)
-    
-        
-    })
-  })
-  .catch(error => {
-    console.error('Une erreur s\'est produite lors de la récupération des données :', error);
-  });
+
+// Affichage des projets (works) dans le DOM 
+async function affichageWorks(worksArray) {
+    gallery.innerHTML = ""; // Vide la galerie avant d'ajouter les works 
+    worksArray.forEach((work) => {
+        const figure = document.createElement("figure");
+        const img = document.createElement("img");
+        const figCaption = document.createElement("figcaption");
+        img.src = work.imageUrl;
+        figCaption.textContent = work.title;
+        figure.appendChild(img);
+        figure.appendChild(figCaption);
+        gallery.appendChild(figure);
+    });
+}
+
+// Appel de la fonction getWorks et affichage des données récupérées
+getWorks()
+    .then(worksArray => affichageWorks(worksArray))
+    .catch(error => console.error('Error getting works:', error));
 
 
-// Utilisation de l'API Fetch pour récupérer les données
-fetch(url)
-  .then(response => {
-    // Vérifie si la requête a été effectuée avec succès
-    if (!response.ok) {
-      throw new Error('La requête a échoué');
-    }
-    // Convertit la réponse en JSON
-    return response.json();
-  })
-  
+
   
     
    

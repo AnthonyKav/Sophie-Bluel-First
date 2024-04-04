@@ -1,3 +1,4 @@
+//défini l'adresse où fetch les données 
 const url = 'http://localhost:5678/api/works';
 
 // Sélection de la div gallery 

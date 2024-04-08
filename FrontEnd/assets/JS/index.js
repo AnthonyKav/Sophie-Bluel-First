@@ -64,7 +64,7 @@ async function filterCategory() {
             } else {
                 affichageWorks(images);
             }
-            console.log(btnId);
+            console.log("le bouton filtre " + btnId + " a été cliqué");
         })
     });
 }

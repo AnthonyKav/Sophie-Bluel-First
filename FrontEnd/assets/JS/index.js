@@ -1,108 +1,113 @@
-//défini l'adresse où fetch les données 
-const url = 'http://localhost:5678/api/works';
+// Définit l'adresse où fetch les données
+const baseUrl = 'http://localhost:5678/api';
 
-// Sélection de la div gallery 
+// Sélection de la div gallery
 const gallery = document.querySelector(".gallery");
-//selection de la div "filters" pour les boutons filtre
+// Sélection de la div "filters" pour les boutons filtre
 const filters = document.querySelector('.filters');
 
-// Récupération des projets dans l'api 
-async function getWorks() {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching works:', error);
-        return [];
+// Récupération des projets et des catégories dans l'API
+async function fetchData() {
+  try {
+    // Effectue deux requêtes fetch en parallèle, une pour les œuvres et une pour les catégories
+    const [worksResponse, categoriesResponse] = await Promise.all([
+      fetch(`${baseUrl}/works`),
+      fetch(`${baseUrl}/categories`)
+    ]);
+
+    // Vérifie si les réponses sont OK (code de statut 200-299)
+    if (!worksResponse.ok || !categoriesResponse.ok) {
+      throw new Error('Network response was not ok');
     }
-}
-// Récupération du tableau des catégories //
-async function getCategorys() {
-    const response = await fetch("http://localhost:5678/api/categories");
-    return await response.json();
+
+    // Convertit les réponses en objets JSON
+    const works = await worksResponse.json();
+    const categories = await categoriesResponse.json();
+
+    // Renvoie un objet contenant les œuvres et les catégories
+    return { works, categories };
+  } catch (error) {
+    // Gère les erreurs de requête
+    console.error('Error fetching data:', error);
+    // Renvoie des tableaux vides en cas d'erreur
+    return { works: [], categories: [] };
+  }
 }
 
-async function displayButtonsCategorys() {
-    //Apelle la fonction GetCategorys pour  liste de catégorie en attendant la resolution de la promesse 
-    const categorys = await getCategorys();
-    // Parcours chaque élement de la liste retournée par GetCategorys 
-    categorys.forEach(category => {
-        const btn = document.createElement("button")
-        //défini le texte du bouton en extrayant la premiere lettre pour la mettre en majucule et le reste en minuscule 
-        btn.textContent = category.name.charAt(0).toUpperCase() + category.name.slice(1).toLowerCase();
-        // defini l'id du bouton avec l'id de la catégorie 
-        btn.id = category.id;
-        //ajoute le bouton crée à l'élement filters du html 
-        filters.appendChild(btn);
+async function displayButtonsCategorys(categories) {
+  // Parcourt chaque catégorie
+  categories.forEach(category => {
+    // Crée un bouton pour la catégorie
+    const btn = document.createElement("button");
+    // Définit le texte du bouton (première lettre en majuscule, le reste en minuscule)
+    btn.textContent = category.name.charAt(0).toUpperCase() + category.name.slice(1).toLowerCase();
+    // Définit l'ID du bouton avec l'ID de la catégorie
+    btn.id = category.id;
+    // Ajoute le bouton à la div "filters"
+    filters.appendChild(btn);
+  });
+}
+
+// Filtrage au clic sur le bouton par catégories
+async function filterCategory(works) {
+  // Sélectionne tous les boutons dans la div "filters"
+  const buttons = document.querySelectorAll(".filters button");
+  buttons.forEach(button => {
+    // Ajoute un gestionnaire d'événement "click" à chaque bouton
+    button.addEventListener("click", (e) => {
+      // Récupère l'ID du bouton cliqué
+      const btnId = e.target.id;
+      if (btnId !== "0") {
+        // Si un bouton de catégorie est cliqué (ID différent de 0)
+        // Filtre les œuvres correspondant à la catégorie
+        const filteredWorks = works.filter(work => work.categoryId == btnId);
+        // Affiche les œuvres filtrées
+        affichageWorks(filteredWorks);
+      } else {
+        // Si le bouton "Tous" est cliqué (ID 0)
+        // Affiche toutes les œuvres
+        affichageWorks(works);
+      }
+      console.log("le bouton filtre " + btnId + " a été cliqué");
     });
+  });
 }
 
-// Filtrage au clic sur le bouton par catégories //
-
-async function filterCategory() {
-    // récupére les images en utilsant la fonction getWorks (elle attend que cette dernière soit resolu grace au await)
-    const images = await getWorks();
-    console.log(images);
-    // Sélectionne tous les boutons à l'intérieur de l'élément HTML avec la classe "filters".
-    const buttons = document.querySelectorAll(".filters button")
-   //Pour chaque bouton sélectionné, ajoute un gestionnaire d'événements "click".
-    buttons.forEach(button => {
-        //Lorsque l'utilisateur clique sur un bouton, cela déclenche cet événement. La fonction callback reçoit l'événement ( e) comme paramètre.
-        button.addEventListener("click", (e) => {
-            //Récupère l'ID du bouton sur lequel l'utilisateur a cliqué.
-            const btnId = e.target.id;
-            //Vérifie si l'ID du bouton est différent de "0" (qui représente le bouton "Tous"). Si c'est le cas, 
-            //cela signifie qu'un filtre de catégorie spécifique a été sélectionné, sinon, tous les travaux sont affichés.
-            if (btnId !== "0") {
-                const buttonsTriCategory = images.filter((caption) => {
-                    return caption.categoryId == btnId
-                });
-                affichageWorks(buttonsTriCategory);
-            } else {
-                affichageWorks(images);
-            }
-            console.log("le bouton filtre " + btnId + " a été cliqué");
-        })
-    });
-}
-    
-
-// Affichage des projets (works) dans le DOM 
+// Affichage des projets (works) dans le DOM
 async function affichageWorks(worksArray) {
-    gallery.innerHTML = ""; // Vide la galerie avant d'ajouter les works 
-    worksArray.forEach((work) => {
-        const figure = document.createElement("figure");
-        const img = document.createElement("img");
-        const figCaption = document.createElement("figcaption");
-        img.src = work.imageUrl;
-        figCaption.textContent = work.title;
-        figure.appendChild(img);
-        figure.appendChild(figCaption);
-        gallery.appendChild(figure);
-    });
+  // Vide la galerie avant d'ajouter les œuvres
+  gallery.innerHTML = "";
+  // Parcourt chaque œuvre
+  worksArray.forEach((work) => {
+    // Crée un élément figure pour l'œuvre
+    const figure = document.createElement("figure");
+    // Crée un élément img pour l'image de l'œuvre
+    const img = document.createElement("img");
+    // Crée un élément figcaption pour le titre de l'œuvre
+    const figCaption = document.createElement("figcaption");
+    // Définit la source de l'image
+    img.src = work.imageUrl;
+    // Définit le titre de l'œuvre
+    figCaption.textContent = work.title;
+    // Ajoute l'image et le titre à la figure
+    figure.appendChild(img);
+    figure.appendChild(figCaption);
+    // Ajoute la figure à la galerie
+    gallery.appendChild(figure);
+  });
 }
 
+// Appeler les fonctions pour lancer les works
+async function init() {
+  // Récupère les œuvres et les catégories
+  const { works, categories } = await fetchData();
+  // Affiche toutes les œuvres par défaut
+  await affichageWorks(works);
+  // Affiche les boutons de catégories
+  await displayButtonsCategorys(categories);
+  // Ajoute le filtrage par catégorie
+  await filterCategory(works);
+}
 
-
-// Appeler les fonctions après le chargement de la page
-
-// Ajoute un écouteur d'evenement sur le chargement du Dom , les fonction asynchrone se déclanchent une fois que le Dom à fini de charger 
-document.addEventListener("DOMContentLoaded", async () => {
-    await displayButtonsCategorys();
-    await affichageWorks(await getWorks()); // Afficher toutes les œuvres par défaut
-    await filterCategory();
-});
-
-
-
-
-  
-    
-   
-
-  
-
- 
+// Initialise l'application
+init();

@@ -111,3 +111,48 @@ async function init() {
 
 // Initialise l'application
 init();
+
+
+/////////////////////////////////////////// ADMIN ////////////////////////////////////////////////
+
+
+//////Fonction pour se deconnecter 
+
+// Cette variable récupère la valeur du jeton d'authentification stocké dans le localStorage 
+const token = window.localStorage.token 
+
+function logOut() {
+    // verifie si  un token d'authentification est présent dans le local storage . si il est présent 
+    // le bouton Login se transoforme en Logout ( InnerHtml)
+    const logOutBtn = document.getElementById("logOut");
+  
+    if (window.localStorage.getItem("token")) {
+      logOutBtn.innerHTML = "logout";
+     // Lorsque l'element est cliqué , le jeton est supprimé et l'utilsateur de ce fait déconnecté . 
+      logOutBtn.addEventListener("click", () => {
+        logOutBtn.href = window.location.href;
+        window.localStorage.removeItem("token");
+      });
+    }}
+  
+  logOut();
+  
+  
+  //// Fonction pour afficher la vue admin si l'utilisateur est connecté
+  function displayAdminView() {
+  const adminView = document.querySelectorAll(".adminView");
+  const sectionFilters = document.querySelector(".filters"); // Sélection de l'élément .filters
+
+  
+  //si l utilisateur est connecté
+  if (window.localStorage.getItem("token")) {
+    //enleve les filtres
+  sectionFilters.style.display = "none";
+  } else {
+    // Si l'utilisateur n'est pas connecté
+    adminView.forEach((adminView) => {
+      adminView.style.display = "none";
+    });
+    }}
+  
+  displayAdminView();

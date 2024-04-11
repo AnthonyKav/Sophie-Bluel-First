@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Sophie Bluel - Architecte d'intérieur</title>
+	<script src="https://kit.fontawesome.com/98c0cd202d.js" crossorigin="anonymous"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,13 +12,20 @@
 	<link rel="stylesheet" href="./assets/style.css">
 </head>
 <body>
+	<div class="adminView">
+		<div id="adminBar" class="adminBar">
+		   <button id="edit_mode-btn" class="editAdmin">
+		   <i class="fa-regular fa-pen-to-square"></i>Mode édition</button>
+		</div>
+	 </div>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<li>projets</li>
 			<li>contact</li>
-			<li><a href="./login.html">login</a></li>
+			<!-- Id pour pouvoir le cibler avec le JS et ainsi le transformer  -->
+			<li><a href=login.html id ="logOut"> login </a></li>			
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>

@@ -207,3 +207,36 @@ footer nav ul {
 	justify-content: flex-end;
 	margin: 2em
 }
+ 
+ /* mode edition */ 
+#adminBar {
+	box-sizing: border-box;
+	position: sticky;
+	top: 0;
+	background-color: #000000;
+	color: white;
+	padding: 10px;
+	height: 50px;
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: stretch;
+	column-gap: 25px;
+}
+#edit_mode-btn {
+	background: transparent;
+	color: white;
+	border: none;
+	font-size: 16px;
+	column-gap: 10px;
+	display: flex;
+	cursor: pointer;
+}
+
+#modal_open {
+	border:none;
+	cursor: pointer;
+    margin-left:300px;
+    margin-top:-20px;
+   padding-bottom: 90px;
+}

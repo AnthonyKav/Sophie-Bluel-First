@@ -240,3 +240,12 @@ footer nav ul {
     margin-top:-20px;
    padding-bottom: 90px;
 }
+
+/* modale */ 
+#modal_open {
+	border:none;
+	cursor: pointer;
+    margin-left:300px;
+    margin-top:-20px;
+   padding-bottom: 90px;
+}
